@@ -1,3 +1,5 @@
+from email.utils import UEMPTYSTRING
+
 import functions
 import FreeSimpleGUI as sg
 
@@ -7,9 +9,10 @@ add_button = sg.Button("Add")
 list_box = sg.Listbox(values=functions.get_todos(), key="todos",
                       enable_events=True, size=(45, 10))
 edit_button = sg.Button("Edit")
+complete_button = sg.Button("Complete")
 
 window = sg.Window('My To-do App', layout=[[text], [input_box, add_button],
-                                           [list_box, edit_button]])
+                                           [list_box, edit_button, complete_button]])
 
 while True:
     event, value = window.read()
@@ -33,6 +36,14 @@ while True:
             index = todos.index(value['todos'][0])
             todo = todos[index].strip('\n')
             window['todo'].update(todo)
+        case "Complete":
+            todos = functions.get_todos()
+            index = todos.index(value['todos'][0])
+            todos.pop(index)
+            functions.write_todos(todos)
+            window['todos'].update(values=todos)
+            empty_string = ''
+            window['todo'].update(empty_string)
         case sg.WINDOW_CLOSED:
             break
 
